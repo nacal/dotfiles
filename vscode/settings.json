@@ -1,0 +1,135 @@
+{
+  "[ruby]": {
+    "editor.formatOnSave": true
+  },
+  "[scss]": {
+    "editor.formatOnSave": false
+  },
+  "[vue]": {
+    "editor.formatOnSave": false
+  },
+  "auto-close-tag.activationOnLanguage": [
+    "xml",
+    "php",
+    "blade",
+    "ejs",
+    "jinja",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "plaintext",
+    "markdown",
+    "vue",
+    "liquid",
+    "erb",
+    "lang-cfml",
+    "cfml",
+    "HTML (EEx)",
+    "HTML (Eex)",
+    "plist"
+  ],
+  "auto-rename-tag.activationOnLanguage": ["*"],
+  "breadcrumbs.enabled": true,
+  "css.validate": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.accessibilitySupport": "off",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.stylelint": true
+  },
+  "editor.cursorBlinking": "smooth",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.fontFamily": "'SourceHanCodeJP-Medium', 'Source Han Code JP',  Consolas, 'Courier New', monospace",
+  "editor.fontSize": 16,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.minimap.showSlider": "always",
+  "editor.renderControlCharacters": true,
+  "editor.renderLineHighlight": "all",
+  "editor.renderWhitespace": "all",
+  "editor.smoothScrolling": true,
+  "editor.suggestSelection": "first",
+  "editor.tabSize": 2,
+  "emmet.excludeLanguages": ["markdown"],
+  "emmet.showSuggestionsAsSnippets": true,
+  "emmet.triggerExpansionOnTab": true,
+  "emmet.variables": {
+    "lang": "ja"
+  },
+  "eslint.packageManager": "yarn",
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "git.confirmSync": false,
+  "git.ignoreMissingGitWarning": true,
+  "gitlens.remotes": [
+    {
+      "domain": "git.pepabo.com",
+      "type": "GitHub"
+    }
+  ],
+  "html.autoClosingTags": false,
+  "html.format.contentUnformatted": "pre, code, textarea, title, h1, h2, h3, h4, h5, h6, p",
+  "html.format.extraLiners": "",
+  "html.format.maxPreserveNewLines": 2,
+  "html.format.unformatted": null,
+  "html.format.wrapLineLength": 0,
+  "javascript.format.enable": false,
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "less.validate": false,
+  "php.validate.executablePath": "",
+  "prettier.packageManager": "yarn",
+  "prettier.semi": false,
+  "prettier.singleQuote": true,
+  "prettier.vueIndentScriptAndStyle": true,
+  "scss.validate": false,
+  "settingsSync.ignoredExtensions": [],
+  "terminal.integrated.env.osx": {
+    "FIG_NEW_SESSION": "1"
+  },
+  "vetur.format.defaultFormatterOptions": {
+    "js-beautify-html": {
+      "wrap_attributes": "force-expand-multiline"
+    },
+    "prettyhtml": {
+      "printWidth": 100,
+      "singleQuote": false,
+      "sortAttributes": false,
+      "wrapAttributes": false
+    }
+  },
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "window.openFoldersInNewWindow": "on",
+  "window.title": "${activeEditorMedium}${separator}${rootName}",
+  "workbench.colorTheme": "Cobalt2",
+  "workbench.editor.labelFormat": "short",
+  "workbench.editor.tabSizing": "shrink",
+  "workbench.iconTheme": "material-icon-theme",
+  "ruby.intellisense": "rubyLocate",
+  "code-runner.executorMap": {
+    "javascript": "clear; node",
+    "typescript": "clear; ts-node"
+  },
+  "workbench.colorCustomizations": {},
+  "editor.indentSize": "tabSize",
+  "auto-close-tag.disableOnLanguage": [],
+  "git-graph.contextMenuActionsVisibility": {},
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
+  "files.associations": {
+    "*.mdx": "markdown"
+  },
+  "editor.inlineSuggest.enabled": true,
+  "git.ignoreRebaseWarning": true
+}
