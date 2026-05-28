@@ -1,0 +1,324 @@
+# Amazon Q pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
+# Q pre block. Keep at the top of this file.
+eval "$(/opt/homebrew/bin/brew shellenv)"
+# prompt
+PROMPT='%F{3}%n%  %F{1}%~%f %# '
+# zsh-completions
+if [ -e /usr/local/share/zsh-completions ]; then
+  fpath=(/usr/local/share/zsh-completions $fpath)
+fi
+autoload -U compinit
+compinit -u
+# notes
+note() {
+  local f="$HOME/notes/${1:-$(date +%F)}.md"
+  mkdir -p "$(dirname "$f")"
+  nvim "$f"
+}
+# zsh-abbr
+source /opt/homebrew/share/zsh-abbr/zsh-abbr.zsh
+myaliases=(
+  "g=git"
+  "gb=git branch"
+  "gw=git wt"
+  "gcl=git clone"
+  "gct=git commit"
+  "gco=git checkout"
+  "gcom=git checkout main"
+  "gg=git grep"
+  "ga=git add"
+  "gd=git diff"
+  "gl=git log"
+  "gfu=git fetch upstream"
+  "gfo=git fetch origin"
+  "gmod=git merge origin/develop"
+  "gmud=git merge upstream/develop"
+  "gmom=git merge origin/main"
+  "gcm=git commit -m"
+  "gph=git push"
+  "gpho=git push origin"
+  "gphoh=git push origin HEAD"
+  "gphu=git push upstream"
+  "gphuh=git push upstream HEAD"
+  "gpl=git pull"
+  "gplo=git pull origin"
+  "gplom=git pull origin main"
+  "gst=git stash"
+  "gsa=git stash apply"
+  "gsl=git stash list"
+  "gsu=git stash -u"
+  "gsp=git stash pop"
+  "ya=yarn add"
+  "yd=yarn dev"
+  "yi=yarn install"
+  "ys=yarn start"
+  "d=docker"
+  "dcm=docker compose"
+  "dcl=docker compose logs -f"
+  "dce=docker compose exec"
+  "k=kubectl"
+  "ka=kubectl apply -f"
+  "ke=kubectl exec"
+  "kl=kubectl logs -f"
+  "kg=kubectl get"
+  "kx=kubectx"
+  "krm=kubectl delete"
+  "rezsh=source ~/.zshrc"
+  "c=claude"
+  "cdd=claude --channels plugin:discord@claude-plugins-official"
+  "cr=claude --resume"
+  "nn=note"
+)
+[ -f ~/.zshrc.work.zsh ] && source ~/.zshrc.work.zsh
+for alias in $myaliases; do
+  abbr -S ${alias} > /dev/null
+done
+# anyenv
+eval "$(anyenv init -)"
+# go
+export GOPATH=$HOME
+export PATH=$PATH:$GOPATH/bin
+# fzf
+function fzf-src () {
+  local selected_dir=$(ghq list -p | fzf \
+    --query "$LBUFFER" \
+    --preview 'tree -L 1 -C {}' \
+    --preview-window 'right:50%' \
+    --height '60%' \
+    --reverse \
+    --border \
+    --prompt 'repo> '
+  )
+  if [ -n "$selected_dir" ]; then
+    BUFFER="cd ${selected_dir}"
+    zle accept-line
+  fi
+  zle clear-screen
+}
+zle -N fzf-src
+bindkey '^]' fzf-src
+function fzf-notes-grep () {
+  local selected=$(rg --line-number --no-heading --color=always --smart-case '' "$HOME/notes" \
+    | fzf --ansi \
+      --delimiter ':' \
+      --preview 'bat --color=always --highlight-line {2} {1}' \
+      --preview-window 'right:60%:+{2}-/2' \
+      --height '60%' \
+      --reverse \
+      --border \
+      --prompt 'note grep> '
+  )
+  if [ -n "$selected" ]; then
+    local file=$(echo "$selected" | cut -d: -f1)
+    local line=$(echo "$selected" | cut -d: -f2)
+    BUFFER="nvim +${line} ${file}"
+    zle accept-line
+  fi
+  zle clear-screen
+}
+zle -N fzf-notes-grep
+bindkey '^\' fzf-notes-grep
+# 同時に起動しているzshの間でhistoryを共有する
+setopt share_history
+# 同じコマンドをhistoryに残さない
+setopt hist_ignore_all_dups
+# スペースから始まるコマンドをhistoryに残さない
+setopt hist_ignore_space
+# historyに保存するときに余分なスペースを削除する
+setopt hist_reduce_blanks
+# 高機能なワイルドカード展開を使用する
+setopt extended_glob
+# cd無しでもディレクトリ移動
+setopt auto_cd
+# コマンドのスペルミスを指摘
+setopt correct
+# コマンド履歴の入力補完
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# コマンドのシンタックスハイライト
+source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# ファイル名の補間に失敗してもエラーとせずコマンドを起動する
+setopt +o nomatch
+# path
+export PATH="$HOME/.embulk/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
+export GPG_TTY=$(tty)
+# Q post block. Keep at the bottom of this file.
+# bun completions
+[ -s "/Users/nacal/.bun/_bun" ] && source "/Users/nacal/.bun/_bun"
+eval "$(rbenv init -)"
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/nacal/.lmstudio/bin"
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"export PATH="/opt/homebrew/opt/mysql-client@8.0/bin:$PATH"
+export PATH="/opt/homebrew/opt/mysql-client@8.0/bin:$PATH"
+eval # ZSH has a quirk where `preexec` is only run if a command is actually run (i.e
+# pressing ENTER at an empty command line will not cause preexec to fire). This
+# can cause timing issues, as a user who presses "ENTER" without running a command
+# will see the time to the start of the last command, which may be very large.
+
+# To fix this, we create STARSHIP_START_TIME upon preexec() firing, and destroy it
+# after drawing the prompt. This ensures that the timing for one command is only
+# ever drawn once (for the prompt immediately after it is run).
+
+zmodload zsh/parameter  # Needed to access jobstates variable for STARSHIP_JOBS_COUNT
+
+# Defines a function `__starship_get_time` that sets the time since epoch in millis in STARSHIP_CAPTURED_TIME.
+if [[ $ZSH_VERSION == ([1-4]*) ]]; then
+    # ZSH <= 5; Does not have a built-in variable so we will rely on Starship's inbuilt time function.
+    __starship_get_time() {
+        STARSHIP_CAPTURED_TIME=$(/opt/homebrew/bin/starship time)
+    }
+else
+    zmodload zsh/datetime
+    zmodload zsh/mathfunc
+    __starship_get_time() {
+        (( STARSHIP_CAPTURED_TIME = int(rint(EPOCHREALTIME * 1000)) ))
+    }
+fi
+
+# The two functions below follow the naming convention `prompt_<theme>_<hook>`
+# for compatibility with Zsh's prompt system. See
+# https://github.com/zsh-users/zsh/blob/2876c25a28b8052d6683027998cc118fc9b50157/Functions/Prompts/promptinit#L155
+
+# Runs before each new command line.
+prompt_starship_precmd() {
+    # Save the status, because subsequent commands in this function will change $?
+    STARSHIP_CMD_STATUS=$? STARSHIP_PIPE_STATUS=(${pipestatus[@]})
+
+    # Calculate duration if a command was executed
+    if (( ${+STARSHIP_START_TIME} )); then
+        # If an arithmetic expression evaluates to 0, its exit status is 1:
+        # "The return status is 0 if the arithmetic value of the expression is non-zero, 1 if it is zero, and 2 if an error occurred."
+        # In rare cases, the subtraction below can result in an int 0 result (yes, really),
+        # which would then kill the shell if 'set -e' is in effect.
+        # We therefore have to assign the result outside the expression (using 'STARSHIP_DURATION=$((...))'),
+        # because unlike '(())', '$(())' gets a return status of 0 even if the expression evaluates to int 0
+        # (but it still surfaces a potential error, normally status 2, as status 1).
+        __starship_get_time && STARSHIP_DURATION=$(( STARSHIP_CAPTURED_TIME - STARSHIP_START_TIME ))
+        unset STARSHIP_START_TIME
+    # Drop status and duration otherwise
+    else
+        unset STARSHIP_DURATION STARSHIP_CMD_STATUS STARSHIP_PIPE_STATUS
+    fi
+
+    # Use length of jobstates array as number of jobs. Expansion fails inside
+    # quotes so we set it here and then use the value later on.
+    STARSHIP_JOBS_COUNT="${#jobstates[*]}"
+}
+
+# Runs after the user submits the command line, but before it is executed and
+# only if there's an actual command to run
+prompt_starship_preexec() {
+    __starship_get_time && STARSHIP_START_TIME=$STARSHIP_CAPTURED_TIME
+}
+
+# Add hook functions
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd prompt_starship_precmd
+add-zsh-hook preexec prompt_starship_preexec
+
+# Set up a function to redraw the prompt if the user switches vi modes
+starship_zle-keymap-select() {
+    zle reset-prompt
+}
+
+## Check for existing keymap-select widget.
+if [[ -v widgets[zle-keymap-select] ]]; then
+    # zle-keymap-select is a special widget so it'll be "user:fnName" or nothing. Let's get fnName only.
+    __starship_preserved_zle_keymap_select=${widgets[zle-keymap-select]#user:}
+fi
+
+if [[ -z ${__starship_preserved_zle_keymap_select:-} ]]; then
+    zle -N zle-keymap-select starship_zle-keymap-select;
+else
+    # Define a wrapper fn to call the original widget fn and then Starship's.
+    starship_zle-keymap-select-wrapped() {
+        $__starship_preserved_zle_keymap_select "$@";
+        starship_zle-keymap-select "$@";
+    }
+    zle -N zle-keymap-select starship_zle-keymap-select-wrapped;
+fi
+
+export STARSHIP_SHELL="zsh"
+
+# Set up the session key that will be used to store logs
+STARSHIP_SESSION_KEY="$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM"; # Random generates a number b/w 0 - 32767
+STARSHIP_SESSION_KEY="${STARSHIP_SESSION_KEY}0000000000000000" # Pad it to 16+ chars.
+export STARSHIP_SESSION_KEY=${STARSHIP_SESSION_KEY:0:16}; # Trim to 16-digits if excess.
+
+VIRTUAL_ENV_DISABLE_PROMPT=1
+
+setopt promptsubst
+
+PROMPT='$('/opt/homebrew/bin/starship' prompt --terminal-width="$COLUMNS" --keymap="${KEYMAP:-}" --status="${STARSHIP_CMD_STATUS:-}" --pipestatus="${STARSHIP_PIPE_STATUS[*]:-}" --cmd-duration="${STARSHIP_DURATION:-}" --jobs="$STARSHIP_JOBS_COUNT")'
+RPROMPT='$('/opt/homebrew/bin/starship' prompt --right --terminal-width="$COLUMNS" --keymap="${KEYMAP:-}" --status="${STARSHIP_CMD_STATUS:-}" --pipestatus="${STARSHIP_PIPE_STATUS[*]:-}" --cmd-duration="${STARSHIP_DURATION:-}" --jobs="$STARSHIP_JOBS_COUNT")'
+PROMPT2="$(/opt/homebrew/bin/starship prompt --continuation)"
+export PATH="$HOME/.local/bin:$PATH"
+
+eval "$(git wt --init zsh)"
+eval "$(direnv hook zsh)"
+
+# OSC 7 でカレントディレクトリを通知
+function osc7_cwd() {
+  printf '\e]7;file://%s%s\e\\' "$HOST" "$PWD"
+}
+
+# タブタイトルを設定（ディレクトリ名 + ブランチ）
+function set_tab_title() {
+  local dir_name="${PWD##*/}"  # 最後のディレクトリ名だけ
+  [[ "$PWD" == "$HOME" ]] && dir_name="~"
+
+  local branch=""
+  if git rev-parse --is-inside-work-tree &>/dev/null; then
+    branch=$(git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
+    local git_dir
+    git_dir=$(git rev-parse --git-dir 2>/dev/null)
+    if [[ "$git_dir" == */.git/worktrees/* ]]; then
+      local repo_name="${git_dir%%/.git/worktrees/*}"
+      repo_name="${repo_name##*/}"
+      dir_name="${repo_name}/${dir_name}"
+    fi
+    printf '\e]1;%s  %s\e\\' "$dir_name" "$branch"
+  else
+    printf '\e]1;%s\e\\' "$dir_name"
+  fi
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd osc7_cwd
+add-zsh-hook chpwd set_tab_title
+add-zsh-hook precmd set_tab_title
+osc7_cwd
+set_tab_title
+
+# Pokemon image on every prompt
+if command -v wezterm &> /dev/null && [ -n "$WEZTERM_PANE" ]; then
+  mkdir -p "$HOME/.cache/wezterm/pokemon"
+  _pokemon_id_file="$HOME/.cache/wezterm/pokemon/pane_${WEZTERM_PANE}.id"
+  # ペインIDファイルが既にあればそのIDを再利用、なければ新規生成
+  if [ -f "$_pokemon_id_file" ] && [ -s "$_pokemon_id_file" ]; then
+    _pokemon_id=$(cat "$_pokemon_id_file")
+  else
+    _pokemon_id=$(printf '%04d' $(jot -r 1 1 1025))
+    echo "$_pokemon_id" > "$_pokemon_id_file"
+  fi
+  _pokemon_path="$HOME/.cache/wezterm/pokemon/${_pokemon_id}.png"
+  if [ ! -f "$_pokemon_path" ]; then
+    curl -sfL --max-time 5 \
+      "https://www.pokemon.co.jp/ex/30th_logo/assets/img/download/${_pokemon_id}.png" \
+      -o "$_pokemon_path" 2>/dev/null
+  fi
+  export WEZTERM_POKEMON_PATH="$_pokemon_path"
+  unset _pokemon_id _pokemon_path _pokemon_id_file
+
+  # precmd フックで毎プロンプト前にポケモンを表示
+  prompt_pokemon_precmd() {
+    if [ -f "$WEZTERM_POKEMON_PATH" ]; then
+      wezterm imgcat --width 10 "$WEZTERM_POKEMON_PATH"
+    fi
+  }
+  add-zsh-hook precmd prompt_pokemon_precmd
+fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
