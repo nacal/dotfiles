@@ -11,7 +11,6 @@
 | `dot_config/wezterm/` | `~/.config/wezterm/` (WezTerm 設定) |
 | `dot_claude/` | `~/.claude/` (Claude Code 設定) |
 | `Brewfile` | `brew bundle` 用 (deploy 対象外) |
-| `vscode/` | VSCode 設定リファレンス (deploy 対象外) |
 
 ## 新マシンへのセットアップ
 
