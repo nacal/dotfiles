@@ -6,6 +6,9 @@ return {
     { key = 'Tab', mods = 'CTRL', action = act.ActivateTabRelative(1) },
     { key = 'Tab', mods = 'SHIFT|CTRL', action = act.ActivateTabRelative(-1) },
     { key = 'Enter', mods = 'ALT', action = act.ToggleFullScreen },
+    -- Option + ← / → で単語移動 (Meta-b / Meta-f を送る。readline系ツール全般で有効)
+    { key = 'LeftArrow', mods = 'OPT', action = act.SendString '\x1bb' },
+    { key = 'RightArrow', mods = 'OPT', action = act.SendString '\x1bf' },
     { key = '!', mods = 'CTRL', action = act.ActivateTab(0) },
     { key = '!', mods = 'SHIFT|CTRL', action = act.ActivateTab(0) },
     { key = '\"', mods = 'ALT|CTRL', action = act.SplitVertical{ domain =  'CurrentPaneDomain' } },
@@ -150,13 +153,11 @@ return {
     { key = 'r', mods = 'LEADER', action = act.SplitHorizontal{ domain = 'CurrentPaneDomain' } },
     -- Paneを閉じる leader + w
     { key = 'w', mods = 'LEADER', action = act.CloseCurrentPane{ confirm = true } },
-    -- Pane移動 leader + hlkj
+    -- Pane移動 leader + h/j/k/l (vim風)
     { key = 'h', mods = 'LEADER', action = act.ActivatePaneDirection 'Left' },
-    { key = 'l', mods = 'LEADER', action = act.ActivatePaneDirection 'Right' },
-    { key = 'k', mods = 'LEADER', action = act.ActivatePaneDirection 'Up' },
     { key = 'j', mods = 'LEADER', action = act.ActivatePaneDirection 'Down' },
-    -- ポケモン背景のトグル leader + p
-    { key = 'p', mods = 'LEADER', action = act.EmitEvent 'toggle-pokemon-bg' },
+    { key = 'k', mods = 'LEADER', action = act.ActivatePaneDirection 'Up' },
+    { key = 'l', mods = 'LEADER', action = act.ActivatePaneDirection 'Right' },
   },
 
   key_tables = {

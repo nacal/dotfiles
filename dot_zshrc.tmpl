@@ -301,33 +301,4 @@ add-zsh-hook precmd set_tab_title
 osc7_cwd
 set_tab_title
 
-# Pokemon image on every prompt
-if command -v wezterm &> /dev/null && [ -n "$WEZTERM_PANE" ]; then
-  mkdir -p "$HOME/.cache/wezterm/pokemon"
-  _pokemon_id_file="$HOME/.cache/wezterm/pokemon/pane_${WEZTERM_PANE}.id"
-  # ペインIDファイルが既にあればそのIDを再利用、なければ新規生成
-  if [ -f "$_pokemon_id_file" ] && [ -s "$_pokemon_id_file" ]; then
-    _pokemon_id=$(cat "$_pokemon_id_file")
-  else
-    _pokemon_id=$(printf '%04d' $(jot -r 1 1 1025))
-    echo "$_pokemon_id" > "$_pokemon_id_file"
-  fi
-  _pokemon_path="$HOME/.cache/wezterm/pokemon/${_pokemon_id}.png"
-  if [ ! -f "$_pokemon_path" ]; then
-    curl -sfL --max-time 5 \
-      "https://www.pokemon.co.jp/ex/30th_logo/assets/img/download/${_pokemon_id}.png" \
-      -o "$_pokemon_path" 2>/dev/null
-  fi
-  export WEZTERM_POKEMON_PATH="$_pokemon_path"
-  unset _pokemon_id _pokemon_path _pokemon_id_file
-
-  # precmd フックで毎プロンプト前にポケモンを表示
-  prompt_pokemon_precmd() {
-    if [ -f "$WEZTERM_POKEMON_PATH" ]; then
-      wezterm imgcat --width 10 "$WEZTERM_POKEMON_PATH"
-    fi
-  }
-  add-zsh-hook precmd prompt_pokemon_precmd
-fi
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
